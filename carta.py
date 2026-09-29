@@ -153,9 +153,13 @@ class Manejador(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    servidor = ThreadingHTTPServer(("127.0.0.1", 5000), Manejador)
-    print("Abre http://127.0.0.1:5000  (Ctrl+C para cerrar)")
-    webbrowser.open("http://127.0.0.1:5000")
+    en_linea = "PORT" in os.environ
+    puerto = int(os.environ.get("PORT", 5000))
+    host = "0.0.0.0" if en_linea else "127.0.0.1"
+    servidor = ThreadingHTTPServer((host, puerto), Manejador)
+    print(f"Abre http://127.0.0.1:{puerto}  (Ctrl+C para cerrar)")
+    if not en_linea:
+        webbrowser.open(f"http://127.0.0.1:{puerto}")
     try:
         servidor.serve_forever()
     except KeyboardInterrupt:
